@@ -151,7 +151,7 @@ class BinarySearchTree {
             return root;
         }
         // else if root is greater than key move to left
-        // else if root is smaller than key move to right;
+        // else if root is smaller than key move to right
         if ((int) root.key > key) { root.left = insert(root.left, key); }
         if ((int) root.key < key) { root.right = insert(root.right, key); }
         
@@ -287,8 +287,8 @@ class AVLTrees {
         // If the root is empty or if the key does not exist
         if (root == null) { return root; }
         
-        // If root is greater than key move to left;
-        // else if root is smaller than key move to right;
+        // If root is greater than key move to left
+        // else if root is smaller than key move to right
         if ((int) root.key > key) { root.left = delete(root.left, key); }
         else if ((int) root.key < key) { root.right = delete(root.right, key); }
         // At the point of this line the root should be now equal to tree
