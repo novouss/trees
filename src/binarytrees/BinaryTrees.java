@@ -9,7 +9,7 @@ import java.util.Stack;
 public class BinaryTrees {
     /*
     
-        BINARY TREES ( Started: September 26, 2020 ) Raymond Brian D. Gorospe
+        TREES( Started: September 26, 2020 ) Raymond Brian D. Gorospe
     
     Contents:
         Binary Search Trees
@@ -32,7 +32,7 @@ public class BinaryTrees {
     
 
     public static void main(String[] args) {
-        
+
     }
     
 }
@@ -142,7 +142,7 @@ class BinarySearchTree {
         if ( !search(key) ) 
             root = insert(root, key);
         else
-            System.out.printf("Key: %d was already inserted\n\n", key);
+            System.out.printf("Key: %d was already inserted%n%n", key);
     }
     private static Node insert(Node root, int key) {
         // If root is empty set key as the root
@@ -215,7 +215,8 @@ class BinarySearchTree {
         
         if (root.left != null) {
             min = (int) root.left.key;
-            root = root.left;
+            // root = root.left; // I honestly don't know the purpose of this...
+            // Will delete if commenting it doesn't affect any process
         }
         return min;
     }
@@ -270,6 +271,8 @@ class AVLTrees {
         if ((int) root.key > key) { root.left = insert(root.left, key); }
         if ((int) root.key < key) { root.right = insert(root.right, key); }
         
+        // Check balance
+        root = balance(root);
         // else return unchanged
         return root;
 
@@ -302,7 +305,10 @@ class AVLTrees {
             root.right = delete(root.right, (int) root.getKey());
             
         }
-        
+
+        if (root != null) {
+            root = balance(root);
+        }
         return root;
     }
 //==============================================================================
@@ -330,7 +336,8 @@ class AVLTrees {
         
         if (root.left != null) {
             min = (int) root.left.key;
-            root = root.left;
+            // root = root.left; // I honestly don't know the purpose of this...
+            // Will delete if commenting it doesn't affect any process
         }
         return min;
     }
@@ -340,18 +347,82 @@ class AVLTrees {
     public int getDepth(Node root) {
         return getDepth(root, 0);
     }
+
     private int getDepth(Node root, int depth) {
         // Reach the bottom part of the tree.
         if (root == null) { return 0; }
         else if (root.left == null && root.right == null) { return depth; }
-        else {
-            // Move down and increase value by one for every recursion
-            return getDepth(root.left, depth - 1) - getDepth(root.right, depth + 1);
-        }
         
+        // Move down and increase value by one for every recursion
+        // It's added because left will always become negative if subtracted by right
+        // To counteract constant negative values, add right to negative left
+        return getDepth(root.left, depth - 1) + getDepth(root.right, depth + 1);
+         
     }
+
+    public int getHeight(Node root) {
+        if (root == null) { return 0; }
+
+        int left = getHeight(root.left);
+        int right = getHeight(root.right);
+
+        return (left > right) ? left + 1 : right + 1;
+    }
+
 //==============================================================================
     
+    public Node balance(Node root) {
+        int balance = getDepth(root);
+
+        // Right Heavy
+        if (balance > 1) {
+            if (getHeight(root.right.right) > getHeight(root.right.left)) {
+                // Left Rotation
+                root = leftRotation(root);
+            } else {
+                // Right Left Rotation
+                root.right = rightRotation(root.right);
+                root = leftRotation(root);
+            }
+        // Left Heavy
+        } else if (balance < -1) {
+            if (getHeight(root.left.left) > getHeight(root.left.right)) {
+                // Right Rotation
+                root = rightRotation(root);
+            } else {
+                // Left Right Rotation
+                root.left = leftRotation(root.left);
+                root = rightRotation(root);
+            }
+        }
+
+        // Return unchanged
+        return root;
+    }
+
+    public Node rightRotation(Node root) {
+        Node a = root.left;
+        Node b = a.right;
+
+        // Perform rotation
+        a.right = root;
+        root.left = b;
+
+        // Set new root
+        return a;
+    }
+
+    public Node leftRotation(Node root) {
+        Node a = root.right;
+        Node b = a.left;
+
+        // Perform rotation
+        a.left = root;
+        root.right = b;
+
+        // Set new root
+        return a;
+    }
     
 }
 //==============================================================================
@@ -432,12 +503,12 @@ class ExpressionTree {
             node = new Node(number);
             
             if ( c == '(') {
-                // Add openning parenthesis to tell the system where to stop
+                // Add opening parenthesis to tell the system where to stop
                 stackC.push(node);
                 
             } else if ( c == ')' ) {
                 
-                // Pop out all of nodes in stackC until it reaches the openning
+                // Pop out all of nodes in stackC until it reaches the opening
                 // parenthesis inserted earlier
                 while(!stackC.isEmpty() && !stackC.peek().toString().equals("(")) {
                     
@@ -451,7 +522,7 @@ class ExpressionTree {
                 }
                 
                 // No need to push the closing parenthesis to stack just remove
-                // openning parenthesis
+                // opening parenthesis
                 
                 stackC.pop();
 
@@ -500,7 +571,7 @@ class ExpressionTree {
     private int preceedenceOf(char c) {
         
         switch (c) {
-            // P - is seprate.
+            // P - is separated.
             case '^': // E - EXPONENT
                 return 3;
             case '*': // M - MULTIPLY
